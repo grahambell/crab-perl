@@ -70,7 +70,8 @@ methods are called.
                                    server   => 'localhost',
                                    port     => 8000,
                                    hostname => 'localhost',
-                                   username => 'username');
+                                   username => 'username',
+                                   timeout  => 30);
 
 If the other settings are not specified, the crab settings files
 will be read, the CRABHOST and CRABPORT environment variables will
@@ -107,6 +108,7 @@ sub new {
                                             hostname()),
         username => $opt{'username'} || $conf->val('client', 'username',
                                             _get_username()),
+        timeout  => $opt{'timeout'}  || $conf->val('server', 'timeout', 30),
     };
 
     return bless $self, $class;
@@ -189,7 +191,7 @@ sub _write_json {
     my $url = shift;
     my $obj = shift;
 
-    my $ua = new LWP::UserAgent();
+    my $ua = new LWP::UserAgent(timeout => $self->{'timeout'});
     my $req = new HTTP::Request(PUT => $url);
     $req->content(encode_json($obj));
     my $res = $ua->request($req);
