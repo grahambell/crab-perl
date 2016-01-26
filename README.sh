@@ -18,7 +18,7 @@ Requirements
 
 END
 
-perl -e 'local $\ = "\n"; $INC{"Module/Build.pm"} = 1; do "Build.PL"; print "    ", $_ foreach sort keys %require;'
+perl -e 'local $\ = "\n"; $INC{"Module/Build.pm"} = 1; do "Build.PL"; print "    ", $_ foreach grep {$_ ne "perl"} sort keys %require;'
 
 cat <<END
 
