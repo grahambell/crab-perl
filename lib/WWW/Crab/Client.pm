@@ -82,7 +82,7 @@ methods are called.
                                    username => 'username',
                                    timeout  => 30);
 
-If the other settings are not specified, the crab settings files
+If the other settings are not specified, the Crab settings files
 will be read, the CRABHOST and CRABPORT environment variables will
 be checked, or defaults will be used.
 
