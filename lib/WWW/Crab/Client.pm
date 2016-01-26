@@ -261,7 +261,7 @@ __END__
 
 =head1 AUTHOR
 
-Graham Bell <g.bell@jach.hawaii.edu>
+Graham Bell <g.bell@eaobservatory.org>
 
 =head1 COPYRIGHT
 
