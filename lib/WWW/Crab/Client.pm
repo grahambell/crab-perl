@@ -8,9 +8,17 @@ WWW::Crab::Client - Crab client library
 
   my $crab = new WWW::Crab::Client();
 
-  eval {
+  my $start_response = eval {
       $crab->start();
   };
+
+  # Check for "inhibit" flag (optional).
+  if ($start_response and $start_response->{'inhibit'}) {
+      eval {
+          $crab->finish(status => WWW::Crab::Client::INHIBITED);
+      };
+      exit;
+  }
 
   # Perform the cron job actions ...
 
