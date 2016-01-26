@@ -129,7 +129,8 @@ Reports that the job has started.
 This method uses "die" to raise an exception if it is unsuccessful
 in reporting to the Crab server.
 
-Returns a true value on success.
+Returns the decoded server response on success, which make include
+an "inhibit" hash key.
 
 =cut
 
@@ -137,7 +138,7 @@ sub start {
     my $self = shift;
 
     return $self->_write_json($self->_get_url('start'), {
-        command => $self->{'command'}});
+        command => $self->{'command'}}, 1);
 }
 
 =item finish()
@@ -174,29 +175,37 @@ sub finish {
         command => $self->{'command'},
         status  => defined $opt{'status'} ? $opt{'status'} : UNKNOWN,
         stdout  => $opt{'stdout'} || '',
-        stderr  => $opt{'stderr'} || ''});
+        stderr  => $opt{'stderr'} || ''}, 0);
 }
 
 # _write_json()
 #
 # Sends the given object to the Crab server as a JSON message.
 #
-#   $self->_write_json($self->_get_url($ACTION), $HASHREF);
+#   $self->_write_json($self->_get_url($ACTION), $HASHREF, $READ);
 #
-# Dies on failure, and returns 1 on success.  Could be improved
-# to return a useful value on success, so long as it is 'true'.
+# Dies on failure, and returns 1 on success, unless $READ is given a
+# true value, when it attempts to decode the server response as JSON
+# and return the decoded object.  If there is no response, it returns
+# a reference to an empty hash.
 
 sub _write_json {
     my $self = shift;
     my $url = shift;
     my $obj = shift;
+    my $read = shift;
 
     my $ua = new LWP::UserAgent(timeout => $self->{'timeout'});
     my $req = new HTTP::Request(PUT => $url);
     $req->content(encode_json($obj));
     my $res = $ua->request($req);
     die $res->status_line() unless $res->is_success();
-    return 1;
+    return 1 unless $read;
+
+    my $content = $res->decoded_content();
+    return {} unless $content;
+
+    return decode_json($content);
 }
 
 # _get_url()
@@ -257,6 +266,7 @@ Graham Bell <g.bell@jach.hawaii.edu>
 =head1 COPYRIGHT
 
 Copyright (C) 2012-2013 Science and Technology Facilities Council.
+Copyright (C) 2016 East Asian Observatory.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
