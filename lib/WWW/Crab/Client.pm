@@ -50,7 +50,7 @@ use JSON;
 use LWP::UserAgent;
 use Sys::Hostname;
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 use constant {
     SUCCESS       => 0,
