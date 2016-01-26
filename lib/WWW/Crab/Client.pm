@@ -51,6 +51,7 @@ use constant {
     COULDNOTSTART => 3,
     ALREADYRUNNING=> 4,
     WARNING       => 5,
+    INHIBITED     => 6,
 };
 
 =head1 CONSTRUCTOR
